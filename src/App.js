@@ -3,6 +3,7 @@ import Home from './Components/home'
 import Navbar from './Components/Navbar';
 import Admin from './Components/admin';
 import Pending from './Components/pending';
+import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
  
 
@@ -10,7 +11,7 @@ function App() {
  
     <div className='App'>
       <Navbar/>
-      {/* <Home/> */}
+      <Home/>
       <Pending/>
       {/* <Admin/> */}
  

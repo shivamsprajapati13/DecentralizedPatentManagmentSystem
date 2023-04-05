@@ -4,8 +4,15 @@ import { firestore } from '../firebase'
 import { addDoc,collection } from "@firebase/firestore"
 import { storage } from "../firebase";
 import { v4 as uuidv4 } from 'uuid';
-
+import Card from 'react-bootstrap/Card';
 import {ref,uploadBytes,getDownloadURL} from "firebase/storage";
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
+
 
 function Home() {
   const [addQuery, setAddQuery] = useState('');
@@ -49,22 +56,36 @@ function Home() {
       await addDoc(collection(firestore, "queries"), query);
   };
 
-  const handleCheckQuery = async () => {
-    const result = await contract.methods.checkQuery(checkQuery).call();
-    setQueryExists(result);
-  };
+  // const handleCheckQuery = async () => {
+  //   const result = await contract.methods.checkQuery(checkQuery).call();
+  //   setQueryExists(result);
+  // };
 
   return (
     <div>
-      <h2>Add Query</h2>
-      <form onSubmit={(e) => e.preventDefault()}>
-        <label>
-          Query:
-          <input type="text" value={addQuery} onChange={handleChangeAdd}  required/>
-        </label>
+         <Container fluid>
+      <Row>
+        <Col>
+      <Card> <h2 >Add Work</h2>
+      <Card.Body> 
+        <form onSubmit={(e) => e.preventDefault()}>
+        <Form.Label>KeyWord</Form.Label>
+        <Form.Control type="text" required placeholder="Enter keyword" value={addQuery} onChange={handleChangeAdd} />
+          <br></br>
       
-        <label>Enter description</label>
-        <input value={addDescription} onChange={handleDescriptionChange} required/>
+        {/* <label>Enter description</label>
+        <input value={addDescription} onChange={handleDescriptionChange} required/> */}
+        <InputGroup>
+        <InputGroup.Text>Enter Description</InputGroup.Text>
+        <Form.Control as="textarea" aria-label="With textarea" type="text" placeholder="Enter Small Description" value={addDescription} onChange={handleDescriptionChange}/>
+      </InputGroup>
+
+{/* 
+        <Form.Label>Enter Description</Form.Label>
+        <Form.Control type="text" placeholder="Enter Small Description" value={addDescription} onChange={handleDescriptionChange} /> */}
+          <br>
+          </br>
+
         <input
         required
         type="file"
@@ -73,24 +94,34 @@ function Home() {
 
         }}
       />
-  <button onClick={handleAddQuery}>Add</button>
+  <Button variant="primary" onClick={handleAddQuery}>
+        Add 
+      </Button>
+  </form>
+  </Card.Body>
+    </Card>
+    </Col>
+    </Row>
+    </Container>
+     
+     
 
-      </form>
+     
 
-      <h2>Check Query</h2>
+      {/* <h2>Check Query</h2>
       <form onSubmit={(e) => e.preventDefault()}>
         <label>
           Query:
           <input type="text" value={checkQuery} onChange={handleChangeCheck} />
         </label>
         <button onClick={handleCheckQuery}>Check</button>
-      </form>
+      </form> */}
 
-      {queryExists ? (
+      {/* {queryExists ? (
         <p>The query "{checkQuery}" exists.</p>
       ) : (
         <p>The query "{checkQuery}" does not exist.</p>
-      )}
+      )} */}
     </div>
   );
 }
