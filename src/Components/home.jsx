@@ -3,7 +3,8 @@ import contract from '../Contract';
 import { firestore } from '../firebase'
 import { addDoc,collection } from "@firebase/firestore"
 import { storage } from "../firebase";
-import { v4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
+
 import {ref,uploadBytes,getDownloadURL} from "firebase/storage";
 
 function Home() {
@@ -26,22 +27,25 @@ function Home() {
     setCheckQuery(event.target.value);
   };
   const imagesListRef = ref(storage, "Files/");
-
+  const id = uuidv4();
   const handleAddQuery = async () => {
+    if (imageUpload == null) return;
+    const imageRef = ref(storage, `Files/${imageUpload.name}-${id}`);
+    uploadBytes(imageRef, imageUpload).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        setImageUrls((prev) => [...prev, url]);
+      });
+    });
+
+
     await contract.methods.addQuery(addQuery).send({ from: window.ethereum.selectedAddress });
     setAddQuery('');
     const query = {
         keyword: addQuery,
-        descrp: addDescription,
-        status: false,
+        descrp: addDescription, 
+        approve: "false",
+        id:imageUpload.name+"-"+id,
       };
-      if (imageUpload == null) return;
-      const imageRef = ref(storage, `Files/${imageUpload.name + v4()}`);
-      uploadBytes(imageRef, imageUpload).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((url) => {
-          setImageUrls((prev) => [...prev, url]);
-        });
-      });
       await addDoc(collection(firestore, "queries"), query);
   };
 
