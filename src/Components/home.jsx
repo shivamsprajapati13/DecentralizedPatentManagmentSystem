@@ -45,7 +45,7 @@ function Home() {
     });
 
 
-    await contract.methods.addQuery(addQuery).send({ from: window.ethereum.selectedAddress });
+    await contract.methods.addQuery(addQuery,false).send({from: window.ethereum.selectedAddress });
     setAddQuery('');
     const query = {
         keyword: addQuery,

@@ -7,9 +7,27 @@ const ABI = [
 				"internalType": "string",
 				"name": "query",
 				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "approved",
+				"type": "bool"
 			}
 		],
 		"name": "addQuery",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "query",
+				"type": "string"
+			}
+		],
+		"name": "approveQuery",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -40,6 +58,19 @@ const ABI = [
 	},
 	{
 		"inputs": [],
+		"name": "getAdmin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "getAllQueries",
 		"outputs": [
 			{
@@ -52,7 +83,7 @@ const ABI = [
 		"type": "function"
 	}
 ]; // put your contract's ABI here
-const ADDRESS = '0xB5dE4D6d6e4E31c5302cd982C78B6Fe44408C869'; // put your contract's address here
+const ADDRESS = '0x87c858e9dc050041977eC59866B164474F7738CE'; // put your contract's address here
 
 const web3 = new Web3(Web3.givenProvider);
 

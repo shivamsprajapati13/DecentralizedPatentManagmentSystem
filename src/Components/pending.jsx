@@ -15,7 +15,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
-
+import contract from '../Contract';
 
 const Pending = () => {
   const [tasks, setTasks] = useState([]);
@@ -52,10 +52,38 @@ const Pending = () => {
     return task.data.keyword.toLowerCase().includes(searchTerm.toLowerCase());
   
   });
+
+      const getCurrentUserWalletAddress = () => {
+        return window.ethereum.selectedAddress;
+        console.log(window.ethereum.selectedAddress);
+      };
   
+      // const adminWalletAddress = () => {
+      //   return contract.methods.getAdmin().send();
+      //   // return window.ethereum.selectedAddress;
+      //   console.log(contract.methods.getAdmin().send());
+      // };
+
   const handleApprove = async (id) => {
-    const taskRef = doc(firestore, "queries", id);
-    await updateDoc(taskRef, { approve: "Approved" });
+    // alert("I am in approve handle");
+    const currentUserWalletAddress = await getCurrentUserWalletAddress();
+    console.log(currentUserWalletAddress);
+    
+    const adminAddress = await contract.methods.getAdmin().call({ from: currentUserWalletAddress });
+    console.log(adminAddress);
+
+
+    if (currentUserWalletAddress.toLowerCase() == adminAddress.toLowerCase()) {
+
+      const taskRef = doc(firestore, "queries", id);
+      // await contract.methods.approveQuery.send({ from: window.ethereum.selectedAddress })
+      await updateDoc(taskRef, { approve: "Approved" });
+    }else {
+      // console.error("Only admin can approve queries.");
+      alert("Only admin can approve queries")
+    }
+  
+    
   };
 
   return (
