@@ -13,8 +13,6 @@ function App() {
       <Navbar/>
       <Home/>
       <Pending/>
-      {/* <Admin/> */}
- 
     </div>
   );
 }

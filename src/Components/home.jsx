@@ -54,6 +54,7 @@ function Home() {
         id:imageUpload.name+"-"+id,
       };
       await addDoc(collection(firestore, "queries"), query);
+      alert("Work added Succesfully")
   };
 
   // const handleCheckQuery = async () => {

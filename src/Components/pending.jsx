@@ -81,6 +81,7 @@ const Pending = () => {
 
       console.log("Below call");
       await updateDoc(taskRef, { approve: "Approved" });
+      alert("Approved Successful");
     }else {
       // console.error("Only admin can approve queries.");
       alert("Only admin can approve queries")
@@ -89,12 +90,40 @@ const Pending = () => {
     
   };
 
+
+  const handleNotApprove = async (id) => {
+    // alert("I am in approve handle");
+    const currentUserWalletAddress = await getCurrentUserWalletAddress();
+    console.log(currentUserWalletAddress);
+    
+    const adminAddress = await contract.methods.getAdmin().call({from: currentUserWalletAddress});
+    console.log(adminAddress);
+
+
+    if (currentUserWalletAddress.toLowerCase() == adminAddress.toLowerCase()) {
+      // console.log("Not admin");
+      const taskRef = doc(firestore, "queries", id);
+      console.log("above call");
+       await contract.methods.approveQuery(id).send({ from: currentUserWalletAddress });
+
+      console.log("Below call");
+      await updateDoc(taskRef, { approve: "NotApprove" });
+      alert("Appoved Removed Successful");
+    }else {
+      // console.error("Only admin can approve queries.");
+      alert("Only admin can approve queries")
+    }
+  
+    
+  };
+
+
   return (
     <div>
        <Container fluid>
       <Row> 
         <Col>
-        <Card>
+        <Card >
         <Card.Title>Search Work</Card.Title>
         <Card.Body>
       <div className="search-bar">
@@ -106,7 +135,7 @@ const Pending = () => {
       <Table striped bordered hover responsive>
         <thead>
           <tr>
-            <th>Title</th>
+            <th>Keyword</th>
             <th>Description</th>
             <th>Approve Status</th>
             <th>Check Document</th>
@@ -118,12 +147,19 @@ const Pending = () => {
             <tr key={task.id}>
               <td>{task.data.keyword}</td>
               <td>{task.data.descrp}</td>
-              <td>{task.data.approve}<Button variant="info" onClick={() => handleApprove(task.id)}>Approve</Button>
-
-            </td>
-              <td>
-                <Button variant="info" onClick={() => handleCheckDocument(task.data.id)}>Check Document</Button>
-              </td>
+              <td> {task.data.approve === "Approved" ? (
+                
+      <Button variant="danger" onClick={() => handleNotApprove(task.id)}>
+      Not Approve
+    </Button>
+    ) : (
+      <Button variant="success" onClick={() => handleApprove(task.id)}>
+        Approved
+      </Button>
+    )}              </td>
+    <td>
+    <Button variant="info" onClick={() => handleCheckDocument(task.data.id)}>Check Document</Button>
+    </td>
              
             </tr>
           ))}
