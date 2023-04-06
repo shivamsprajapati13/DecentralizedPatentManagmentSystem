@@ -83,7 +83,7 @@ const ABI = [
 		"type": "function"
 	}
 ]; // put your contract's ABI here
-const ADDRESS = '0x87c858e9dc050041977eC59866B164474F7738CE'; // put your contract's address here
+const ADDRESS = '0x574d10b5D1f3CCcDC7B65186e985bC108688D7f3'; // put your contract's address here
 
 const web3 = new Web3(Web3.givenProvider);
 

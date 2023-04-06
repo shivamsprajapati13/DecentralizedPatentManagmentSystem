@@ -69,14 +69,17 @@ const Pending = () => {
     const currentUserWalletAddress = await getCurrentUserWalletAddress();
     console.log(currentUserWalletAddress);
     
-    const adminAddress = await contract.methods.getAdmin().call({ from: currentUserWalletAddress });
+    const adminAddress = await contract.methods.getAdmin().call({from: currentUserWalletAddress});
     console.log(adminAddress);
 
 
     if (currentUserWalletAddress.toLowerCase() == adminAddress.toLowerCase()) {
-
+      // console.log("Not admin");
       const taskRef = doc(firestore, "queries", id);
-      // await contract.methods.approveQuery.send({ from: window.ethereum.selectedAddress })
+      console.log("above call");
+       await contract.methods.approveQuery(id).send({ from: currentUserWalletAddress });
+
+      console.log("Below call");
       await updateDoc(taskRef, { approve: "Approved" });
     }else {
       // console.error("Only admin can approve queries.");
