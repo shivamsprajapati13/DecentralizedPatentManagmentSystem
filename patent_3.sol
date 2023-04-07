@@ -6,6 +6,7 @@ contract QueryContract {
     address private admin;
     mapping(string => bool) private queries;
     mapping(string => bool) private approvals;
+ 
     string[] private allQueries;
     
     constructor() {
@@ -21,11 +22,11 @@ contract QueryContract {
         return admin;
     }
     
-    function addQuery(string memory query, bool approved) public  {
-        queries[query] = true;
-        allQueries.push(query);
-        approvals[query] = approved;
-    }
+    function addQuery(string memory query, bool approval) public {
+    queries[query] = approval;
+
+}
+
     
     function checkQuery(string memory query) public view returns ( bool) {
         return  approvals[query];
@@ -36,9 +37,6 @@ contract QueryContract {
     }
     
     function approveQuery(string memory query) public onlyAdmin {
-        require(queries[query], "Query does not exist");
-        approvals[query] = true;
+         approvals[query] = true;
     }
-    
-   
 }

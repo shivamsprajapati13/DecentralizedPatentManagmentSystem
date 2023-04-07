@@ -16,6 +16,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 
 function Home() {
   const [addQuery, setAddQuery] = useState('');
+
   const [checkQuery, setCheckQuery] = useState('');
   const [queryExists, setQueryExists] = useState(false);
   const [addDescription, setAddDescription] = useState('');
@@ -33,29 +34,51 @@ function Home() {
   const handleChangeCheck = (event) => {
     setCheckQuery(event.target.value);
   };
+
   const imagesListRef = ref(storage, "Files/");
   const id = uuidv4();
+  
+
+  const getCurrentUserWalletAddress = () => {
+    return window.ethereum.selectedAddress;
+    console.log(window.ethereum.selectedAddress);
+  }
+
   const handleAddQuery = async () => {
     if (imageUpload == null) return;
-    const imageRef = ref(storage, `Files/${imageUpload.name}-${id}`);
-    uploadBytes(imageRef, imageUpload).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        setImageUrls((prev) => [...prev, url]);
+      const imageRef = ref(storage, `Files/${imageUpload.name}-${id}`);
+      uploadBytes(imageRef, imageUpload).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((url) => {
+          setImageUrls((prev) => [...prev, url]);
+        });
       });
-    });
-
-
-    await contract.methods.addQuery(addQuery,false).send({from: window.ethereum.selectedAddress });
-    setAddQuery('');
-    const query = {
-        keyword: addQuery,
-        descrp: addDescription, 
-        approve: "false",
-        id:imageUpload.name+"-"+id,
-      };
-      await addDoc(collection(firestore, "queries"), query);
-      alert("Work added Succesfully")
+      const currentUserWalletAddress = await getCurrentUserWalletAddress();
+      console.log(currentUserWalletAddress);
+    
+    await contract.methods
+      .addQuery(addQuery, false) 
+      .send({ from: window.ethereum.selectedAddress })
+      .on("transactionHash", async (hash) => {
+        console.log("Transaction hash:", hash);
+  
+        const query = {
+          keyword: addQuery,
+          descrp: addDescription,
+          approve: "false",
+          id: imageUpload.name + "-" + id,
+          hashValue: hash,
+          OwnerAddress:currentUserWalletAddress,
+        };
+  
+        await addDoc(collection(firestore, "queries"), query);
+        alert("Work added Successfully");
+      })
+      .catch((error) => {
+        // Handle error if the transaction fails
+        console.error("Error adding query:", error);
+      });
   };
+  
 
   // const handleCheckQuery = async () => {
   //   const result = await contract.methods.checkQuery(checkQuery).call();
@@ -105,8 +128,8 @@ function Home() {
     </Row>
     </Container>
      
-     
-
+     <br>
+     </br>
      
 
       {/* <h2>Check Query</h2>

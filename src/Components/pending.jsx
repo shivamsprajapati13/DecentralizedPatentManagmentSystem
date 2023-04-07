@@ -24,7 +24,6 @@ const Pending = () => {
   const imagesListRef = ref(storage, "Files/");
 
   useEffect(() => {
-    // Get download URLs for all images in "Files" folder
     listAll(imagesListRef).then((response) => {
       response.items.forEach((item) => {
         getDownloadURL(item).then((url) => {
@@ -50,26 +49,26 @@ const Pending = () => {
 
   const filteredTasks = tasks.filter(task => {
     return task.data.keyword.toLowerCase().includes(searchTerm.toLowerCase());
-  
+
   });
 
-      const getCurrentUserWalletAddress = () => {
-        return window.ethereum.selectedAddress;
-        console.log(window.ethereum.selectedAddress);
-      };
-  
-      // const adminWalletAddress = () => {
-      //   return contract.methods.getAdmin().send();
-      //   // return window.ethereum.selectedAddress;
-      //   console.log(contract.methods.getAdmin().send());
-      // };
+  const getCurrentUserWalletAddress = () => {
+    return window.ethereum.selectedAddress;
+    console.log(window.ethereum.selectedAddress);
+  };
+
+  // const adminWalletAddress = () => {
+  //   return contract.methods.getAdmin().send();
+  //   // return window.ethereum.selectedAddress;
+  //   console.log(contract.methods.getAdmin().send());
+  // };
 
   const handleApprove = async (id) => {
     // alert("I am in approve handle");
     const currentUserWalletAddress = await getCurrentUserWalletAddress();
     console.log(currentUserWalletAddress);
-    
-    const adminAddress = await contract.methods.getAdmin().call({from: currentUserWalletAddress});
+
+    const adminAddress = await contract.methods.getAdmin().call({ from: currentUserWalletAddress });
     console.log(adminAddress);
 
 
@@ -77,17 +76,19 @@ const Pending = () => {
       // console.log("Not admin");
       const taskRef = doc(firestore, "queries", id);
       console.log("above call");
-       await contract.methods.approveQuery(id).send({ from: currentUserWalletAddress });
+      await contract.methods.approveQuery(id).send({ from: currentUserWalletAddress }).on("transactionHash", async (hash) => {
 
       console.log("Below call");
-      await updateDoc(taskRef, { approve: "Approved" });
+      await updateDoc(taskRef, { approve: "Approved",
+    hashValue:hash });
       alert("Approved Successful");
-    }else {
+      });
+    } else {
       // console.error("Only admin can approve queries.");
       alert("Only admin can approve queries")
     }
-  
-    
+
+
   };
 
 
@@ -95,8 +96,8 @@ const Pending = () => {
     // alert("I am in approve handle");
     const currentUserWalletAddress = await getCurrentUserWalletAddress();
     console.log(currentUserWalletAddress);
-    
-    const adminAddress = await contract.methods.getAdmin().call({from: currentUserWalletAddress});
+
+    const adminAddress = await contract.methods.getAdmin().call({ from: currentUserWalletAddress });
     console.log(adminAddress);
 
 
@@ -104,73 +105,84 @@ const Pending = () => {
       // console.log("Not admin");
       const taskRef = doc(firestore, "queries", id);
       console.log("above call");
-       await contract.methods.approveQuery(id).send({ from: currentUserWalletAddress });
+      await contract.methods.approveQuery(id).send({ from: currentUserWalletAddress }).on("transactionHash", async (hash) => {
 
-      console.log("Below call");
-      await updateDoc(taskRef, { approve: "NotApprove" });
-      alert("Appoved Removed Successful");
-    }else {
+        console.log("Below call");
+        await updateDoc(taskRef, { approve: "NotApprove",
+      hashValue:hash });
+        alert("Appoved Removed Successful");
+      });
+    }      
+    else {
       // console.error("Only admin can approve queries.");
       alert("Only admin can approve queries")
     }
-  
-    
+
+
   };
 
 
   return (
     <div>
-       <Container fluid>
-      <Row> 
-        <Col>
-        <Card >
-        <Card.Title>Search Work</Card.Title>
-        <Card.Body>
-      <div className="search-bar">
-        {/* <input type="text" placeholder="Search by keyword..." onChange={(e) => setSearchTerm(e.target.value)} /> */}
-        <Form.Control type="text" placeholder="Search by keyword..." onChange={(e) => setSearchTerm(e.target.value)} />
-        <br></br>
-      </div>
+      <Container fluid>
+        <Row>
+          <Col>
+            <Card >
+              <Card.Title>Search Work</Card.Title>
+              <Card.Body>
+                <div className="search-bar">
+                  {/* <input type="text" placeholder="Search by keyword..." onChange={(e) => setSearchTerm(e.target.value)} /> */}
+                  <Form.Control type="text" placeholder="Search by keyword..." onChange={(e) => setSearchTerm(e.target.value)} />
+                  <br></br>
+                </div>
 
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>Keyword</th>
-            <th>Description</th>
-            <th>Approve Status</th>
-            <th>Check Document</th>
-   
-          </tr>
-        </thead>
-        <tbody>
-          {filteredTasks.map((task) => (
-            <tr key={task.id}>
-              <td>{task.data.keyword}</td>
-              <td>{task.data.descrp}</td>
-              <td> {task.data.approve === "Approved" ? (
-                
-      <Button variant="danger" onClick={() => handleNotApprove(task.id)}>
-      Not Approve
-    </Button>
-    ) : (
-      <Button variant="success" onClick={() => handleApprove(task.id)}>
-        Approved
-      </Button>
-    )}              </td>
-    <td>
-    <Button variant="info" onClick={() => handleCheckDocument(task.data.id)}>Check Document</Button>
-    </td>
-             
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    
-      </Card.Body>
-      </Card>
- </Col>
- </Row>
-    </Container>
+                <Table striped bordered hover responsive>
+                  <thead>
+                    <tr>
+                      <th>Keyword</th>
+                      <th>Description</th>
+                      <th>Approve Status</th>
+                      <th>Check Document</th>
+                      <th>Transaction Hash</th>
+                      <th>Owner Address</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredTasks.map((task) => (
+                      <tr key={task.id}>
+                        <td>{task.data.keyword}</td>
+                        <td>{task.data.descrp}</td>
+                        <td> {task.data.approve === "Approved" ? (
+
+                          <Button variant="danger" onClick={() => handleNotApprove(task.id)}>
+                            Remove
+                          </Button>
+                        ) : (
+                          <Button variant="success" onClick={() => handleApprove(task.id)}>
+                            Approve
+                          </Button>
+                        )}              </td>
+                        <td>
+                          <Button variant="info" onClick={() => handleCheckDocument(task.data.id)}>Check Document</Button>
+                        </td>
+                        <td>
+                          {task.data.hashValue}
+                        </td>
+                        <td>
+                          {task.data.OwnerAddress}
+                        </td>
+
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
       {/* {imageUrls.map((url) => (
         <div key={url}>
           <button>

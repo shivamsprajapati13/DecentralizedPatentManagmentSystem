@@ -2,11 +2,6 @@ import Web3 from 'web3';
 
 const ABI = [
 	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "string",
@@ -15,7 +10,7 @@ const ABI = [
 			},
 			{
 				"internalType": "bool",
-				"name": "approved",
+				"name": "approval",
 				"type": "bool"
 			}
 		],
@@ -36,6 +31,11 @@ const ABI = [
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
 	},
 	{
 		"inputs": [
@@ -83,7 +83,7 @@ const ABI = [
 		"type": "function"
 	}
 ]; // put your contract's ABI here
-const ADDRESS = '0x04fC2f3d09C22946376d80CeF3F679d06Ea00922'; // put your contract's address here
+const ADDRESS = '0x32dCE5CBbd0e7739cE3EE459943AFd7a74FB6404'; // put your contract's address here
 
 const web3 = new Web3(Web3.givenProvider);
 
