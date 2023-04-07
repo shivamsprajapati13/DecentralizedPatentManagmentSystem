@@ -82,8 +82,8 @@ const ABI = [
 		"stateMutability": "view",
 		"type": "function"
 	}
-]; // put your contract's ABI here
-const ADDRESS = '0x32dCE5CBbd0e7739cE3EE459943AFd7a74FB6404'; // put your contract's address here
+];
+const ADDRESS = '0x32dCE5CBbd0e7739cE3EE459943AFd7a74FB6404'; 
 
 const web3 = new Web3(Web3.givenProvider);
 

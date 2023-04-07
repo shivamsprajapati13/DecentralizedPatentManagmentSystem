@@ -74,7 +74,7 @@ function Home() {
         alert("Work added Successfully");
       })
       .catch((error) => {
-        // Handle error if the transaction fails
+      
         console.error("Error adding query:", error);
       });
   };

@@ -32,7 +32,7 @@ const Pending = () => {
       });
     });
 
-    // Subscribe to "queries" collection in Firestore
+ 
     const q = query(collection(firestore, 'queries'))
     onSnapshot(q, (querySnapshot) => {
       const tasks = querySnapshot.docs.map(doc => ({
@@ -48,8 +48,7 @@ const Pending = () => {
   }
 
   const filteredTasks = tasks.filter(task => {
-    return task.data.keyword.toLowerCase().includes(searchTerm.toLowerCase());
-
+    return task.data.keyword.toLowerCase().includes(searchTerm.toLowerCase()) || task.data.descrp.toLowerCase().includes(searchTerm.toLowerCase()) || task.data.hashValue.toLowerCase().includes(searchTerm.toLowerCase()) ;
   });
 
   const getCurrentUserWalletAddress = () => {
@@ -132,7 +131,7 @@ const Pending = () => {
               <Card.Body>
                 <div className="search-bar">
                   {/* <input type="text" placeholder="Search by keyword..." onChange={(e) => setSearchTerm(e.target.value)} /> */}
-                  <Form.Control type="text" placeholder="Search by keyword..." onChange={(e) => setSearchTerm(e.target.value)} />
+                  <Form.Control type="text" placeholder="Search by keyword,Description,Transaction Hash,Owner Address" onChange={(e) => setSearchTerm(e.target.value)} />
                   <br></br>
                 </div>
 
