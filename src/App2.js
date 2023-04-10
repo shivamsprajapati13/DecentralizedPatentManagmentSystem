@@ -1,20 +1,20 @@
 import React from 'react';
 import Home from './Components/home'
-import Navbar from './Components/Navbar';
+import Navbar2 from './Components/Navbar2';
 
 import Pending from './Components/pending';
 import 'bootstrap/dist/css/bootstrap.min.css';
-function App() {
+function App2() {
  
 
   return (                                                                                                            
  
     <div className='App'>
-      <Navbar/>
-      <Home/>
-      {/* <Pending/> */}
+      <Navbar2/>
+      {/* <Home/> */}
+      <Pending/>
     </div>
   );
 }
 
-export default App;
+export default App2;

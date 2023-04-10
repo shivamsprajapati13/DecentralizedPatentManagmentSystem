@@ -6,6 +6,9 @@ nav {
   padding: 1rem;
   color: rgb(122, 10, 10);
 }
+.current{
+  font-weight: bolder;
+}
 
 ul {
   list-style: none;

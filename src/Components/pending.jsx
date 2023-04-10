@@ -127,23 +127,25 @@ const Pending = () => {
         <Row>
           <Col>
             <Card >
-              <Card.Title>Search Work</Card.Title>
+             
+              <Card.Title style={{textAlign:"center", paddingTop:"10px", fontSize:"1.7em"}}>Search Work</Card.Title>
+             
               <Card.Body>
                 <div className="search-bar">
                   {/* <input type="text" placeholder="Search by keyword..." onChange={(e) => setSearchTerm(e.target.value)} /> */}
-                  <Form.Control type="text" placeholder="Search by keyword,Description,Transaction Hash,Owner Address" onChange={(e) => setSearchTerm(e.target.value)} />
+                  <Form.Control type="text" placeholder="Search by Keyword, Description, Transaction Hash or Owner Address" onChange={(e) => setSearchTerm(e.target.value)} />
                   <br></br>
                 </div>
 
                 <Table striped bordered hover responsive>
-                  <thead>
+                  <thead style={{backgroundColor:"#333", color:"white"}}>
                     <tr>
-                      <th>Keyword</th>
-                      <th>Description</th>
-                      <th>Approve Status</th>
-                      <th>Check Document</th>
-                      <th>Transaction Hash</th>
-                      <th>Owner Address</th>
+                      <th style={{textAlign:"center"}}>Keyword</th>
+                      <th style={{textAlign:"center"}}>Description</th>
+                      <th style={{textAlign:"center"}}>Approve Status</th>
+                      <th style={{textAlign:"center"}}>Check Document</th>
+                      <th style={{textAlign:"center"}}>Transaction Hash</th>
+                      <th style={{textAlign:"center"}}>Owner Address</th>
 
                     </tr>
                   </thead>

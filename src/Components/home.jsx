@@ -87,20 +87,20 @@ function Home() {
 
   return (
     <div>
-         <Container fluid>
+         <Container >
       <Row>
         <Col>
-      <Card> <h2 >Add Work</h2>
+      <Card> <h2 style={{textAlign:"center", paddingTop:"10px", fontSize:"1.7em"}}>Add Work</h2>
       <Card.Body> 
         <form onSubmit={(e) => e.preventDefault()}>
-        <Form.Label>KeyWord</Form.Label>
+        <Form.Label style={{fontWeight:"600"}}>KeyWord</Form.Label>
         <Form.Control type="text" required placeholder="Enter keyword" value={addQuery} onChange={handleChangeAdd} />
           <br></br>
       
         {/* <label>Enter description</label>
         <input value={addDescription} onChange={handleDescriptionChange} required/> */}
         <InputGroup>
-        <InputGroup.Text>Enter Description</InputGroup.Text>
+        <InputGroup.Text style={{fontWeight:"600"}}>Enter Description</InputGroup.Text>
         <Form.Control as="textarea" aria-label="With textarea" type="text" placeholder="Enter Small Description" value={addDescription} onChange={handleDescriptionChange}/>
       </InputGroup>
 
@@ -111,6 +111,12 @@ function Home() {
           </br>
 
         <input
+         style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '7vh',
+        }}
         required
         type="file"
         onChange={(event) => {
@@ -118,7 +124,7 @@ function Home() {
 
         }}
       />
-  <Button variant="primary" onClick={handleAddQuery}>
+  <Button variant="primary" onClick={handleAddQuery} style={{padding:"10px",width:"10%"}}>
         Add 
       </Button>
   </form>
