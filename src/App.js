@@ -12,7 +12,7 @@ function App() {
     <div className='App'>
       <Navbar/>
       <Home/>
-      {/* <Pending/> */}
+      <Pending/>
     </div>
   );
 }

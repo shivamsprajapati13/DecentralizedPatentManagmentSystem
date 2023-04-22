@@ -83,7 +83,8 @@ const ABI = [
 		"type": "function"
 	}
 ];
-const ADDRESS = '0x32dCE5CBbd0e7739cE3EE459943AFd7a74FB6404'; 
+const ADDRESS = '0xCd6D2Ac9844c524bF09356b0C7d65210f98a191d'; 
+
 
 const web3 = new Web3(Web3.givenProvider);
 
