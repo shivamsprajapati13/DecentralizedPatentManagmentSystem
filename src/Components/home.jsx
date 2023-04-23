@@ -36,7 +36,7 @@ function Home() {
   };
 
   const imagesListRef = ref(storage, "Files/");
-  const id = uuidv4();
+
   
 
   const getCurrentUserWalletAddress = () => {
@@ -45,32 +45,30 @@ function Home() {
   }
 
   const handleAddQuery = async () => {
-    if (imageUpload == null) return;
-      const imageRef = ref(storage, `Files/${imageUpload.name}-${id}`);
-      uploadBytes(imageRef, imageUpload).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((url) => {
-          setImageUrls((prev) => [...prev, url]);
-        });
-      });
       const currentUserWalletAddress = await getCurrentUserWalletAddress();
       console.log(currentUserWalletAddress);
+
+      const idpdf = await contract.methods.getPatentCount().call();
     
     await contract.methods
-      .addQuery(addQuery, false) 
+      .createPatent(addQuery,addDescription) 
       .send({ from: window.ethereum.selectedAddress })
       .on("transactionHash", async (hash) => {
-        console.log("Transaction hash:", hash);
-  
+        if (imageUpload == null) return;
+        const imageRef = ref(storage, `Files/${idpdf}`);
+        uploadBytes(imageRef, imageUpload).then((snapshot) => {
+          getDownloadURL(snapshot.ref).then((url) => {
+            setImageUrls((prev) => [...prev, url]);
+          });
+        });
+
         const query = {
-          keyword: addQuery,
-          descrp: addDescription,
-          approve: "false",
-          id: imageUpload.name + "-" + id,
-          hashValue: hash,
-          OwnerAddress:currentUserWalletAddress,
+          hashValue:hash,
+          id: idpdf,
         };
-  
+
         await addDoc(collection(firestore, "queries"), query);
+        console.log("Transaction hash:", hash);
         alert("Work added Successfully");
       })
       .catch((error) => {
@@ -80,10 +78,7 @@ function Home() {
   };
   
 
-  // const handleCheckQuery = async () => {
-  //   const result = await contract.methods.checkQuery(checkQuery).call();
-  //   setQueryExists(result);
-  // };
+  
 
   return (
     <div>
@@ -97,16 +92,11 @@ function Home() {
         <Form.Control type="text" required placeholder="Enter keyword" value={addQuery} onChange={handleChangeAdd} />
           <br></br>
       
-        {/* <label>Enter description</label>
-        <input value={addDescription} onChange={handleDescriptionChange} required/> */}
         <InputGroup>
         <InputGroup.Text style={{fontWeight:"600"}}>Enter Description</InputGroup.Text>
         <Form.Control as="textarea" aria-label="With textarea" type="text" placeholder="Enter Small Description" value={addDescription} onChange={handleDescriptionChange}/>
       </InputGroup>
 
-{/* 
-        <Form.Label>Enter Description</Form.Label>
-        <Form.Control type="text" placeholder="Enter Small Description" value={addDescription} onChange={handleDescriptionChange} /> */}
           <br>
           </br>
 

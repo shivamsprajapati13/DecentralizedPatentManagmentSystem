@@ -22,27 +22,43 @@ const Pending = () => {
   const [imageUrls, setImageUrls] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const imagesListRef = ref(storage, "Files/");
+  const [events, setEvents] = useState([]);
+
+  const RemoveStatus = "false";
+
 
   useEffect(() => {
-    listAll(imagesListRef).then((response) => {
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          setImageUrls((prev) => [...prev, url]);
-        });
-      });
-    });
+    const fetchEvents = async () => {
+        console.log("above");
+      const patentCount = await contract.methods.getPatentCount().call();
+      console.log("Event count:"+patentCount);
+      const queryArray = [];
 
- 
-    const q = query(collection(firestore, 'queries'))
-    onSnapshot(q, (querySnapshot) => {
-      const tasks = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        data: doc.data(),
-      }));
-      setTasks(tasks);
-    });
+      for (let i = 0; i < patentCount; i++) {
+        const approveStatus = await contract.methods.getPatentApprovalStatus(i).call();
+        
+        console.log("Approve status"+approveStatus);
+        
+
+        const event = await contract.methods.getPatent(i).call();
+        queryArray.push({
+          id: i,
+          owner:event[0],
+          keyword: event[1],
+          descrp: event[2],
+          status:approveStatus.toString(),
+        });
+      }
+      console.log(queryArray);
+
+      setEvents(queryArray);
+    };
+
+    fetchEvents();
   }, []);
 
+
+  
   const handleCheckDocument = (id) => {
     window.open(`https://firebasestorage.googleapis.com/v0/b/blockchain-f0893.appspot.com/o/Files%2F${id}?alt=media`);
   }
@@ -56,59 +72,46 @@ const Pending = () => {
     console.log(window.ethereum.selectedAddress);
   };
 
-  // const adminWalletAddress = () => {
-  //   return contract.methods.getAdmin().send();
-  //   // return window.ethereum.selectedAddress;
-  //   console.log(contract.methods.getAdmin().send());
-  // };
+  
 
   const handleApprove = async (id) => {
-    // alert("I am in approve handle");
+    alert("I am in approve handle");
     const currentUserWalletAddress = await getCurrentUserWalletAddress();
     console.log(currentUserWalletAddress);
 
-    const adminAddress = await contract.methods.getAdmin().call({ from: currentUserWalletAddress });
+    const adminAddress = await contract.methods.admin().call({ from: currentUserWalletAddress });
     console.log(adminAddress);
 
 
     if (currentUserWalletAddress.toLowerCase() == adminAddress.toLowerCase()) {
       // console.log("Not admin");
-      const taskRef = doc(firestore, "queries", id);
+     
       console.log("above call");
-      await contract.methods.approveQuery(id).send({ from: currentUserWalletAddress }).on("transactionHash", async (hash) => {
-
+      await contract.methods.updatePatentStatus(id,true).send({ from: currentUserWalletAddress }).on("transactionHash", async (hash) => {
       console.log("Below call");
-      await updateDoc(taskRef, { approve: "Approved",
-    hashValue:hash });
+   
       alert("Approved Successful");
       });
     } else {
       // console.error("Only admin can approve queries.");
       alert("Only admin can approve queries")
     }
-
-
   };
 
 
   const handleNotApprove = async (id) => {
-    // alert("I am in approve handle");
+    alert("I am in not approve handle");
     const currentUserWalletAddress = await getCurrentUserWalletAddress();
     console.log(currentUserWalletAddress);
 
-    const adminAddress = await contract.methods.getAdmin().call({ from: currentUserWalletAddress });
+    const adminAddress = await contract.methods.admin().call({ from: currentUserWalletAddress });
     console.log(adminAddress);
 
 
     if (currentUserWalletAddress.toLowerCase() == adminAddress.toLowerCase()) {
-      // console.log("Not admin");
-      const taskRef = doc(firestore, "queries", id);
       console.log("above call");
-      await contract.methods.approveQuery(id).send({ from: currentUserWalletAddress }).on("transactionHash", async (hash) => {
-
+      await contract.methods.updatePatentStatus(id,false).send({ from: currentUserWalletAddress }).on("transactionHash", async (hash) => {
         console.log("Below call");
-        await updateDoc(taskRef, { approve: "NotApprove",
-      hashValue:hash });
         alert("Appoved Removed Successful");
       });
     }      
@@ -116,9 +119,37 @@ const Pending = () => {
       // console.error("Only admin can approve queries.");
       alert("Only admin can approve queries")
     }
-
-
   };
+
+  const getOwner = async (patentId) => {
+    const patent = await contract.methods.getPatent(patentId).call();
+    return patent[0];
+  }
+  
+
+  const handleDeletePatent = async (id) => {
+    alert("I am in Handle Delete Patent");
+    const currentUserWalletAddress = await getCurrentUserWalletAddress();
+    console.log(currentUserWalletAddress);
+    
+    const owner = await getOwner(id);
+    console.log(owner);
+    
+    if (currentUserWalletAddress.toLowerCase() == owner.toLowerCase()) {
+      console.log("above call");
+      await contract.methods.removePatent(id).send({ from: currentUserWalletAddress }).on("transactionHash", async (hash) => {
+        console.log("Below call");
+
+        alert("Deleted Successful");
+      });
+    }
+    else{
+      alert("Only Owner can delete his work")
+    }    
+  
+  };
+
+
 
 
   return (
@@ -142,40 +173,35 @@ const Pending = () => {
                     <tr>
                       <th style={{textAlign:"center"}}>Keyword</th>
                       <th style={{textAlign:"center"}}>Description</th>
-                      <th style={{textAlign:"center"}}>Approve Status</th>
                       <th style={{textAlign:"center"}}>Check Document</th>
-                      <th style={{textAlign:"center"}}>Transaction Hash</th>
+                      <th style={{textAlign:"center"}}>Status</th>
+                      <th style={{textAlign:"center"}}>Block No.</th>
                       <th style={{textAlign:"center"}}>Owner Address</th>
+                      <th style={{textAlign:"center"}}>Action</th>
 
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredTasks.map((task) => (
-                      <tr key={task.id}>
-                        <td>{task.data.keyword}</td>
-                        <td>{task.data.descrp}</td>
-                        <td> {task.data.approve === "Approved" ? (
-
-                          <Button variant="danger" onClick={() => handleNotApprove(task.id)}>
-                            Remove
-                          </Button>
-                        ) : (
-                          <Button variant="success" onClick={() => handleApprove(task.id)}>
+                  {events.map((event) => (
+            <tr key={event.id}>
+              <td>{(event.keyword)}</td>
+              <td>{event.descrp} </td>
+              <td>
+                <Button variant="info" onClick={() => handleCheckDocument(event.id)}>Check Document</Button>
+              </td>
+              <td> {event.status == "true" ? (<h5>Accepted</h5> ): (<h5>Pending</h5>) }</td>
+              <td>{event.id}</td>
+            
+              <td>{event.owner}</td>
+              <td>  {event.status == "false"?(<Button variant="success" onClick={() => handleApprove(event.id)}>
                             Approve
-                          </Button>
-                        )}              </td>
-                        <td>
-                          <Button variant="info" onClick={() => handleCheckDocument(task.data.id)}>Check Document</Button>
-                        </td>
-                        <td>
-                          {task.data.hashValue}
-                        </td>
-                        <td>
-                          {task.data.OwnerAddress}
-                        </td>
+                          </Button>):(<Button variant="danger" onClick={() => handleNotApprove(event.id)}>
+                            Remove
+                          </Button>)}
 
-                      </tr>
-                    ))}
+                                          
+              </td>
+              </tr>))}                              
                   </tbody>
                 </Table>
 
@@ -184,13 +210,7 @@ const Pending = () => {
           </Col>
         </Row>
       </Container>
-      {/* {imageUrls.map((url) => (
-        <div key={url}>
-          <button>
-            <a href={url} target="_blank" rel="noopener noreferrer">Click to view Document</a>
-          </button> 
-        </div>
-      ))} */}
+  
     </div>
   );
 };
