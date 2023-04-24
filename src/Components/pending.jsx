@@ -63,8 +63,8 @@ const Pending = () => {
     window.open(`https://firebasestorage.googleapis.com/v0/b/blockchain-f0893.appspot.com/o/Files%2F${id}?alt=media`);
   }
 
-  const filteredTasks = tasks.filter(task => {
-    return task.data.keyword.toLowerCase().includes(searchTerm.toLowerCase()) || task.data.descrp.toLowerCase().includes(searchTerm.toLowerCase()) || task.data.hashValue.toLowerCase().includes(searchTerm.toLowerCase()) ;
+  const filteredTasks = events.filter(task => {
+    return task.keyword.toLowerCase().includes(searchTerm.toLowerCase()) || task.descrp.toLowerCase().includes(searchTerm.toLowerCase()) || task.owner.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   const getCurrentUserWalletAddress = () => {
@@ -164,7 +164,9 @@ const Pending = () => {
               <Card.Body>
                 <div className="search-bar">
                   {/* <input type="text" placeholder="Search by keyword..." onChange={(e) => setSearchTerm(e.target.value)} /> */}
-                  <Form.Control type="text" placeholder="Search by Keyword, Description, Transaction Hash or Owner Address" onChange={(e) => setSearchTerm(e.target.value)} />
+                  <Form.Control type="text" placeholder="Search by Keyword, Description or Owner Address" onChange={(e) => setSearchTerm(e.target.value)} />
+
+                  
                   <br></br>
                 </div>
 
@@ -182,7 +184,7 @@ const Pending = () => {
                     </tr>
                   </thead>
                   <tbody>
-                  {events.map((event) => (
+                  {filteredTasks.map((event) => (
             <tr key={event.id}>
               <td>{(event.keyword)}</td>
               <td>{event.descrp} </td>
