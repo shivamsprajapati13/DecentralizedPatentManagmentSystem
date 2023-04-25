@@ -75,7 +75,7 @@ const Pending = () => {
   
 
   const handleApprove = async (id) => {
-    alert("I am in approve handle");
+    // alert("I am in approve handle");
     const currentUserWalletAddress = await getCurrentUserWalletAddress();
     console.log(currentUserWalletAddress);
 
@@ -100,7 +100,7 @@ const Pending = () => {
 
 
   const handleNotApprove = async (id) => {
-    alert("I am in not approve handle");
+    // alert("I am in not approve handle");
     const currentUserWalletAddress = await getCurrentUserWalletAddress();
     console.log(currentUserWalletAddress);
 
@@ -128,7 +128,7 @@ const Pending = () => {
   
 
   const handleDeletePatent = async (id) => {
-    alert("I am in Handle Delete Patent");
+    // alert("I am in Handle Delete Patent");
     const currentUserWalletAddress = await getCurrentUserWalletAddress();
     console.log(currentUserWalletAddress);
     
