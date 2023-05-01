@@ -10,7 +10,7 @@ function App() {
   if(window.location.pathname=="/"){
     return (
       <div className='App'>
-        <Navbar /><Home />
+        <Navbar /><Home /><Pending/>
         </div>
 
     );

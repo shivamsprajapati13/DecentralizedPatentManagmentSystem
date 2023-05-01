@@ -63,6 +63,12 @@ const ABI =[
 				"internalType": "string",
 				"name": "description",
 				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "date",
+				"type": "uint256"
 			}
 		],
 		"name": "PatentCreated",
@@ -80,32 +86,6 @@ const ABI =[
 		],
 		"name": "PatentRejected",
 		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			}
-		],
-		"name": "PatentRemoved",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "patentId",
-				"type": "uint256"
-			}
-		],
-		"name": "removePatent",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"inputs": [
@@ -167,6 +147,11 @@ const ABI =[
 				"internalType": "bool",
 				"name": "",
 				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -199,25 +184,6 @@ const ABI =[
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "patentId",
-				"type": "uint256"
-			}
-		],
-		"name": "getPatentRemoveStatus",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
@@ -291,16 +257,16 @@ const ABI =[
 				"type": "bool"
 			},
 			{
-				"internalType": "bool",
-				"name": "removed",
-				"type": "bool"
+				"internalType": "uint256",
+				"name": "date",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
 		"type": "function"
 	}
 ];
-const ADDRESS = '0x0235a3D0114D5DF8edBFa747F642ddDea3Fbc363'; 
+const ADDRESS = '0xC026724DdE56809C33646Eb606363eE9a19f37d1'; 
 
 
 const web3 = new Web3(Web3.givenProvider);

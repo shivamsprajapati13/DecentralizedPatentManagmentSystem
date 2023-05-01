@@ -39,15 +39,30 @@ const Pending = () => {
         
         console.log("Approve status"+approveStatus);
         
+        // const q = query(collection(firestore, 'queries'));
+        // onSnapshot(q, (querySnapshot) => {
+        //   const tasks = querySnapshot.docs.map(doc => ({
+        //     id: doc.id,
+        //     data: doc.data(),
+        //   }));
+        // });
+          
+   
 
         const event = await contract.methods.getPatent(i).call();
+        const date = new Date(event[4] * 1000); 
+        const formattedDate = date.toString(); 
         queryArray.push({
           id: i,
           owner:event[0],
           keyword: event[1],
           descrp: event[2],
           status:approveStatus.toString(),
+          dateTime:formattedDate,
+      
         });
+  
+
       }
       console.log(queryArray);
 
@@ -165,10 +180,8 @@ const Pending = () => {
                 <div className="search-bar">
                   {/* <input type="text" placeholder="Search by keyword..." onChange={(e) => setSearchTerm(e.target.value)} /> */}
                   <Form.Control type="text" placeholder="Search by Keyword, Description or Owner Address" onChange={(e) => setSearchTerm(e.target.value)} />
-
-                  
                   <br></br>
-                </div>
+                         </div>
 
                 <Table striped bordered hover responsive>
                   <thead style={{backgroundColor:"#333", color:"white"}}>
@@ -178,6 +191,7 @@ const Pending = () => {
                       <th style={{textAlign:"center"}}>Check Document</th>
                       <th style={{textAlign:"center"}}>Status</th>
                       <th style={{textAlign:"center"}}>Block No.</th>
+                      <th style={{textAlign:"center"}}>Block Time Creation</th>
                       <th style={{textAlign:"center"}}>Owner Address</th>
                       <th style={{textAlign:"center"}}>Action</th>
 
@@ -191,9 +205,9 @@ const Pending = () => {
               <td>
                 <Button variant="info" onClick={() => handleCheckDocument(event.id)}>Check Document</Button>
               </td>
-              <td> {event.status == "true" ? (<h5>Accepted</h5> ): (<h5>Pending</h5>) }</td>
+              <td> {event.status == "true" ? (<h5><Badge bg = "success">Accepted</Badge></h5> ): (<h5><Badge bg = "danger">Pending</Badge></h5>) }</td>
               <td>{event.id}</td>
-            
+              <td>{event.dateTime}</td>
               <td>{event.owner}</td>
               <td>  {event.status == "false"?(<Button variant="success" onClick={() => handleApprove(event.id)}>
                             Approve
